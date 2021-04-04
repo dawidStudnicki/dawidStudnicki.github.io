@@ -37,7 +37,7 @@ const homepage = posts => `
                   .join('')}
             </div>
             <footer>
-              ${`<p>© ${new Date().getFullYear()} ${
+              ${`<p>© ${new Date()} ${
                 config.authorName
               }, Find the code on <a href="https://github.com/kartiknair/blog">GitHub</a></p>`}
             </footer>
