@@ -19,7 +19,7 @@ const posthtml = data => `
     </header>
     <div class="content">
       <h1>${data.attributes.title}</h1>
-      <p>${new Date(parseInt(data.attributes.date)).toDateString()}</p>
+      <p>${new Date()}</p>
       <hr />
       ${data.body}
     </div>

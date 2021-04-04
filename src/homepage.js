@@ -30,9 +30,7 @@ const homepage = posts => `
                     <h3><a href="./${post.path}">${
                       post.attributes.title
                     }</a></h3>
-                        <small>${new Date(
-                          parseInt(post.attributes.date)
-                        ).toDateString()}</small>
+                        <small>${new Date()}</small>
                       <p>${post.attributes.description}</p>
                     </div>`
                   )
