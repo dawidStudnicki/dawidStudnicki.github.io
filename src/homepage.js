@@ -16,7 +16,7 @@ const homepage = posts => `
         <div class="grotesk">
             <header>
                 <h1>${config.blogName}</h1>
-                <p>—</p>
+                <br>
                 <p>This blog is written by <a href="${config.authorWebsite}">${
   config.authorName
 }</a>, ${config.authorDescription}.</p>
