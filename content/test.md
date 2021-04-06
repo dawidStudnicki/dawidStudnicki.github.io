@@ -1,5 +1,5 @@
 ---
-title: Post One
+title: Ze zdjeciem
 date: '1583826864020'
 description: My reasons for starting a blog.
 ---
