@@ -1,5 +1,5 @@
 ---
-title: Post FourQQzzzsasaaskk5zzzzQ
+title: CODE
 date: '15838264020'
 description: My reasons for starting a blog.
 ---
@@ -9,5 +9,5 @@ description: My reasons for starting a blog.
 Really it’s just greata
 
 ```js
-const elo = 'elo'
+const elo = 'elo123'
 ```
