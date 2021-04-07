@@ -8,4 +8,4 @@ description: My reasons for starting a blog.
 
 Really it’s just greata
 
-`elo elo`
+```elo elo```
