@@ -9,7 +9,7 @@ description: My reasons for starting a blog.
 Really it’s just greata
 
 ```js
-const elo = 'elo123'
+const elo = 'elo123320'
 ```
 
 [![goner](http://img.youtube.com/vi/gISE5ublbQA/0.jpg)](http://www.youtube.com/watch?v=gISE5ublbQA "Goner")
