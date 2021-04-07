@@ -15,7 +15,7 @@ const elo = 'elo123320'
 [![goner](http://img.youtube.com/vi/gISE5ublbQA/0.jpg)](http://www.youtube.com/watch?v=gISE5ublbQA "Goner")
 
  <iframe width="560" height="315"
-src="https://www.youtube.com/embed/MUQfKFzIOeU" 
+src="https://www.youtube.com/watch?v=gISE5ublbQA&ab_channel=vaLyTV" 
 frameborder="0" 
 allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" 
 allowfullscreen></iframe>
