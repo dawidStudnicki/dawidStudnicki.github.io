@@ -13,7 +13,7 @@ const posthtml = data => `
     <meta name="description" content="${data.attributes.description}" />
     <link rel="stylesheet" href="../assets/styles/grotesk.light.min.css">
     <link rel="stylesheet" href="../assets/styles/main.min.css">
-    <link rel="stylesheet" href="../assets/styles/highlight.css">
+    <link rel="stylesheet" href="../assets/styles/highlights.css">
     <title>${data.attributes.title}</title>
   </head>
   <body>
