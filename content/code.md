@@ -9,13 +9,13 @@ description: My reasons for starting a blog.
 Really it’s just greata
 
 ```js
-const elo = 'elo123320'
+const elo = 'check'
 ```
 
 [![goner](http://img.youtube.com/vi/gISE5ublbQA/0.jpg)](http://www.youtube.com/watch?v=gISE5ublbQA "Goner")
 
  <iframe width="560" height="315"
-src="https://www.youtube.com/watch?v=gISE5ublbQA&ab_channel=vaLyTV" 
+src="https://www.youtube.com/watch?v=gISE5ublbQA&ab" 
 frameborder="0" 
 allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" 
 allowfullscreen></iframe>
