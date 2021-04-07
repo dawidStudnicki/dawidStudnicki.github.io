@@ -2,7 +2,7 @@ const fs = require('fs');
 
 const config = require('./config');
 const fm = require('front-matter');
-const marked = require('marked');
+const marked = require('./marked');
 
 const posthtml = data => `
 <!DOCTYPE html>
