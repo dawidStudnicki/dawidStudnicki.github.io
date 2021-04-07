@@ -9,5 +9,5 @@ description: My reasons for starting a blog.
 Really it’s just greata
 
 ```js
-const elo = 'elo33'
+const elo = 'elo33xx'
 ```
