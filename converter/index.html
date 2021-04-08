@@ -8,15 +8,15 @@
     <link rel="stylesheet" href="../assets/styles/grotesk.light.min.css">
     <link rel="stylesheet" href="../assets/styles/main.min.css">
     <link rel="stylesheet" href="../assets/styles/highlights.css">
-    <title>Code 2</title>
+    <title>converter</title>
   </head>
   <body>
     <header>
       <a href="/">Go back home</a>
     </header>
     <div class="content">
-      <h1>Code 2</h1>
-      <p>Thu Apr 08 2021 07:35:52 GMT+0000 (Coordinated Universal Time)</p>
+      <h1>converter</h1>
+      <p>Thu Apr 08 2021 07:40:06 GMT+0000 (Coordinated Universal Time)</p>
       <hr />
       <p>Open source facet.</p>
 <p>The intention of this article is to show the process of refactoring java code on a real-life case study. I&#39;m going to give an overview of the initial state -- and what was wrong about it, depict the steps I&#39;ve undertaken in order to give the project some rational structure, and sum up with some conclusions.</p>
@@ -39,17 +39,26 @@
 <li><p>DRY violations, e.g.:</p>
 <ul>
 <li><p>9 duplications of:</p>
-<p>  <code>if</code> <code>(closed) {</code></p>
-<p>  <code>return``;</code></p>
-<p>  <code>}</code></p>
+<pre><code class="language-js"><span class="hljs-string">`if`</span> <span class="hljs-string">`(closed) {`</span>
+
+<span class="hljs-string">`return`</span><span class="hljs-string">`;`</span>
+
+<span class="hljs-string">`}`</span>
+</code></pre>
 </li>
 <li><p>3 duplications of something similar to this:</p>
-<p>  <code>try</code> <code>{</code></p>
-<p>  <code>file = file + ``&quot;&amp;amp;since=&quot;</code> <code>+ URLEncoder.encode(lastSeq, ``&quot;UTF-8&quot;``);</code></p>
-<p>  <code>} ``catch</code> <code>(UnsupportedEncodingException e) {</code></p>
-<p>  <code>// should not happen, but in any case...</code></p>
-<p>  <code>file = file + ``&quot;&amp;amp;since=&quot;</code> <code>+ lastSeq;</code></p>
-<p>  <code>}</code></p>
+<pre><code class="language-js"><span class="hljs-string">`try`</span> <span class="hljs-string">`{`</span>
+
+<span class="hljs-string">`file = file + `</span><span class="hljs-string">`&quot;&amp;amp;since=&quot;`</span> <span class="hljs-string">`+ URLEncoder.encode(lastSeq, `</span><span class="hljs-string">`&quot;UTF-8&quot;`</span><span class="hljs-string">`);`</span>
+
+<span class="hljs-string">`} `</span><span class="hljs-string">`catch`</span> <span class="hljs-string">`(UnsupportedEncodingException e) {`</span>
+
+<span class="hljs-string">`// should not happen, but in any case...`</span>
+
+<span class="hljs-string">`file = file + `</span><span class="hljs-string">`&quot;&amp;amp;since=&quot;`</span> <span class="hljs-string">`+ lastSeq;`</span>
+
+<span class="hljs-string">`}`</span>
+</code></pre>
 </li>
 <li><p>  the default for every configuration property is always declared twice (see <a href="https://github.com/elasticsearch/elasticsearch-river-couchdb/blob/master/src/main/java/org/elasticsearch/river/couchdb/CouchdbRiver.java#L96">the constructor</a>)</p>
 </li>
@@ -71,35 +80,64 @@
 <li><p>Error-handling logic duplicated everywhere, yet not making the code look particularly stable &amp; safe,</p>
 <ul>
 <li><p>a snippet from <a href="https://github.com/elasticsearch/elasticsearch-river-couchdb/blob/master/src/main/java/org/elasticsearch/river/couchdb/CouchdbRiver.java#L491" title="here">here</a>:</p>
-<p>  <code>try</code> <code>{</code></p>
-<p>  <code>// ~50 LoC here</code></p>
-<p>  <code>} ``catch</code> <code>(Exception e) {</code></p>
-<p>  <code>try</code> <code>{</code></p>
-<p>  <code>Closeables.close(is, ``true``);</code></p>
-<p>  <code>} ``catch</code> <code>(IOException e1) {</code></p>
-<p>  <code>// Ignore</code></p>
-<p>  <code>}</code></p>
-<p>  <code>if</code> <code>(connection != ``null``) {</code></p>
-<p>  <code>try</code> <code>{</code></p>
-<p>  <code>connection.disconnect();</code></p>
-<p>  <code>} ``catch</code> <code>(Exception e1) {</code></p>
-<p>  <code>// ignore</code></p>
-<p>  <code>} ``finally</code> <code>{</code></p>
-<p>  <code>connection = ``null``;</code></p>
-<p>  <code>}</code></p>
-<p>  <code>}</code></p>
-<p>  <code>if</code> <code>(closed) {</code></p>
-<p>  <code>return``;</code></p>
-<p>  <code>}</code></p>
-<p>  <code>logger.warn(``&quot;failed to read from _changes, throttling....&quot;``, e);</code></p>
-<p>  <code>try</code> <code>{</code></p>
-<p>  <code>Thread.sleep(``5000``);</code></p>
-<p>  <code>} ``catch</code> <code>(InterruptedException e1) {</code></p>
-<p>  <code>if</code> <code>(closed) {</code></p>
-<p>  <code>return``;</code></p>
-<p>  <code>}</code></p>
-<p>  <code>}</code></p>
-<p>  <code>} ``// finally ....</code></p>
+<pre><code class="language-js"><span class="hljs-string">`try`</span> <span class="hljs-string">`{`</span>
+
+<span class="hljs-string">`// ~50 LoC here`</span>
+
+<span class="hljs-string">`} `</span><span class="hljs-string">`catch`</span> <span class="hljs-string">`(Exception e) {`</span>
+
+<span class="hljs-string">`try`</span> <span class="hljs-string">`{`</span>
+
+<span class="hljs-string">`Closeables.close(is, `</span><span class="hljs-string">`true`</span><span class="hljs-string">`);`</span>
+
+<span class="hljs-string">`} `</span><span class="hljs-string">`catch`</span> <span class="hljs-string">`(IOException e1) {`</span>
+
+<span class="hljs-string">`// Ignore`</span>
+
+<span class="hljs-string">`}`</span>
+
+<span class="hljs-string">`if`</span> <span class="hljs-string">`(connection != `</span><span class="hljs-string">`null`</span><span class="hljs-string">`) {`</span>
+
+<span class="hljs-string">`try`</span> <span class="hljs-string">`{`</span>
+
+<span class="hljs-string">`connection.disconnect();`</span>
+
+<span class="hljs-string">`} `</span><span class="hljs-string">`catch`</span> <span class="hljs-string">`(Exception e1) {`</span>
+
+<span class="hljs-string">`// ignore`</span>
+
+<span class="hljs-string">`} `</span><span class="hljs-string">`finally`</span> <span class="hljs-string">`{`</span>
+
+<span class="hljs-string">`connection = `</span><span class="hljs-string">`null`</span><span class="hljs-string">`;`</span>
+
+<span class="hljs-string">`}`</span>
+
+<span class="hljs-string">`}`</span>
+
+<span class="hljs-string">`if`</span> <span class="hljs-string">`(closed) {`</span>
+
+<span class="hljs-string">`return`</span><span class="hljs-string">`;`</span>
+
+<span class="hljs-string">`}`</span>
+
+<span class="hljs-string">`logger.warn(`</span><span class="hljs-string">`&quot;failed to read from _changes, throttling....&quot;`</span><span class="hljs-string">`, e);`</span>
+
+<span class="hljs-string">`try`</span> <span class="hljs-string">`{`</span>
+
+<span class="hljs-string">`Thread.sleep(`</span><span class="hljs-string">`5000`</span><span class="hljs-string">`);`</span>
+
+<span class="hljs-string">`} `</span><span class="hljs-string">`catch`</span> <span class="hljs-string">`(InterruptedException e1) {`</span>
+
+<span class="hljs-string">`if`</span> <span class="hljs-string">`(closed) {`</span>
+
+<span class="hljs-string">`return`</span><span class="hljs-string">`;`</span>
+
+<span class="hljs-string">`}`</span>
+
+<span class="hljs-string">`}`</span>
+
+<span class="hljs-string">`} `</span><span class="hljs-string">`// finally ....`</span>
+</code></pre>
 </li>
 </ul>
 </li>
@@ -108,17 +146,23 @@
 <li><p>No tests, at least none which would actually test something,</p>
 <ul>
 <li><p>instead: two <em>main()</em> methods which might prove useful for debugging, e.g.<a href="https://github.com/elasticsearch/elasticsearch-river-couchdb/blob/master/src/test/java/org/elasticsearch/river/couchdb/CouchdbRiverTest.java">CouchdbRiverTest.java</a></p>
-<p>  <code>public</code> <code>static</code> <code>void</code> <code>main(String[] args) ``throws</code> <code>Exception {</code></p>
-<p>  <code>Node node = NodeBuilder.nodeBuilder().settings(ImmutableSettings.settingsBuilder().put(``&quot;gateway.type&quot;``, ``&quot;local&quot;``)).node();</code></p>
-<p>  <code>Thread.sleep(``1000``);</code></p>
-<p>  <code>node.client().prepareIndex(``&quot;_river&quot;``, ``&quot;db&quot;``, ``&quot;_meta&quot;``).setSource(jsonBuilder().startObject().field(``&quot;type&quot;``, ``&quot;couchdb&quot;``).endObject()).execute().actionGet();</code></p>
-<p>  <code>Thread.sleep(``1000000``);</code></p>
-<p>  <code>}</code></p>
-</li>
-</ul>
-</li>
-</ul>
+<pre><code class="language-js"><span class="hljs-string">`public`</span> <span class="hljs-string">`static`</span> <span class="hljs-string">`void`</span> <span class="hljs-string">`main(String[] args) `</span><span class="hljs-string">`throws`</span> <span class="hljs-string">`Exception {`</span>
+
+<span class="hljs-string">`Node node = NodeBuilder.nodeBuilder().settings(ImmutableSettings.settingsBuilder().put(`</span><span class="hljs-string">`&quot;gateway.type&quot;`</span><span class="hljs-string">`, `</span><span class="hljs-string">`&quot;local&quot;`</span><span class="hljs-string">`)).node();`</span>
+
+<span class="hljs-string">`Thread.sleep(`</span><span class="hljs-string">`1000`</span><span class="hljs-string">`);`</span>
+
+<span class="hljs-string">`node.client().prepareIndex(`</span><span class="hljs-string">`&quot;_river&quot;`</span><span class="hljs-string">`, `</span><span class="hljs-string">`&quot;db&quot;`</span><span class="hljs-string">`, `</span><span class="hljs-string">`&quot;_meta&quot;`</span><span class="hljs-string">`).setSource(jsonBuilder().startObject().field(`</span><span class="hljs-string">`&quot;type&quot;`</span><span class="hljs-string">`, `</span><span class="hljs-string">`&quot;couchdb&quot;`</span><span class="hljs-string">`).endObject()).execute().actionGet();`</span>
+
+<span class="hljs-string">`Thread.sleep(`</span><span class="hljs-string">`1000000`</span><span class="hljs-string">`);`</span>
+
+<span class="hljs-string">`}`</span>
+</code></pre>
 <p>Preparations.</p>
+</li>
+</ul>
+</li>
+</ul>
 <p>I started my work by getting this stuff to compile &amp; run. I also decided to upgrade the dependencies&#39; versions, so that I could work with the newest ones. I also switched from TestNG to JUnit, because I simply prefer the latter. Since there were no tests in the project anyway, the change didn&#39;t break anything.</p>
 <p>Configuration.</p>
 <p>The first programmatic challenge was to refactor the configuration part. At first glance, the configuration could be split into three pieces:</p>
