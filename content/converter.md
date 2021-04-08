@@ -1,5 +1,5 @@
 ---
-title: Code 2
+title: converter
 date: '15838264020'
 description: My reasons for starting a blog.
 ---
@@ -28,15 +28,15 @@ What it used to look like.
         -   why would the main class know exactly [how to parse some property value](https://github.com/elasticsearch/elasticsearch-river-couchdb/blob/master/src/main/java/org/elasticsearch/river/couchdb/CouchdbRiver.java#L354)coming from both CouchBase and CouchDb?
     -   DRY violations, e.g.:
         -   9 duplications of:
-
+            ```js
             `if` `(closed) {`
 
             `return``;`
 
             `}`
-
+            ```
         -   3 duplications of something similar to this:
-
+            ```js
             `try` `{`
 
             `file = file + ``"&amp;since="` `+ URLEncoder.encode(lastSeq, ``"UTF-8"``);`
@@ -48,7 +48,7 @@ What it used to look like.
             `file = file + ``"&amp;since="` `+ lastSeq;`
 
             `}`
-
+            ```
         -   the default for every configuration property is always declared twice (see [the constructor](https://github.com/elasticsearch/elasticsearch-river-couchdb/blob/master/src/main/java/org/elasticsearch/river/couchdb/CouchdbRiver.java#L96))
     -   closed for extension & open for modification,
         -   Well, technically one could extend the functionality by passing some scripts via configuration. But hardly anybody would manage to extend the existing classes, meaning that the only way would be to modify its sources. To tell the truth, it wasn't so "open" or "inviting" for modifications either =).
@@ -58,7 +58,7 @@ What it used to look like.
     -   A mess of conditions, try-catch-finally blocks and loops, all forming up a visually abstract quartet of mountain-shaped methods,
     -   Error-handling logic duplicated everywhere, yet not making the code look particularly stable & safe,
         -   a snippet from [here](https://github.com/elasticsearch/elasticsearch-river-couchdb/blob/master/src/main/java/org/elasticsearch/river/couchdb/CouchdbRiver.java#L491 "here"):
-
+            ```js
             `try` `{`
 
             `// ~50 LoC here`
@@ -116,10 +116,10 @@ What it used to look like.
             `}`
 
             `} ``// finally ....`
-
+            ```
 -   No tests, at least none which would actually test something,
     -   instead: two *main()* methods which might prove useful for debugging, e.g.[CouchdbRiverTest.java](https://github.com/elasticsearch/elasticsearch-river-couchdb/blob/master/src/test/java/org/elasticsearch/river/couchdb/CouchdbRiverTest.java)
-
+        ```js
         `public` `static` `void` `main(String[] args) ``throws` `Exception {`
 
         `Node node = NodeBuilder.nodeBuilder().settings(ImmutableSettings.settingsBuilder().put(``"gateway.type"``, ``"local"``)).node();`
@@ -131,7 +131,7 @@ What it used to look like.
         `Thread.sleep(``1000000``);`
 
         `}`
-
+        ```
 Preparations.
 
 I started my work by getting this stuff to compile & run. I also decided to upgrade the dependencies' versions, so that I could work with the newest ones. I also switched from TestNG to JUnit, because I simply prefer the latter. Since there were no tests in the project anyway, the change didn't break anything.
